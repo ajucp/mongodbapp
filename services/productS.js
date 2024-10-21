@@ -1,9 +1,9 @@
 const Product = require("../models/productM");
 
-const createProduct=async(productId,productName,description,price)=>{
+const createProduct=async(productId,productName,description,price,imageBase64)=>{
     try {
         console.log("SERVICE PAGE")
-        const newProduct=new Product(productId,productName,description,price)
+        const newProduct=new Product(productId,productName,description,price,imageBase64)
         const productExist=await newProduct.checkProductId(productId)
         if (productExist.length>0){
             return {'message':"Product already exist"}

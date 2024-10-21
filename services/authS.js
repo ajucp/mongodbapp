@@ -15,7 +15,7 @@ try {
     if(!chLogin){
         throw new err('Authentication Failed')
     }
-    const loggedInUser = new User(chLogin.Fname, chLogin.Lname, chLogin.email, chLogin.userId, chLogin.password);
+    const loggedInUser = new User(chLogin.Fname, chLogin.Lname, chLogin.email, chLogin.userId, chLogin.password,chLogin.role);
     const token=loggedInUser.generateAccessJWT();
     // console.log(token)
     return{

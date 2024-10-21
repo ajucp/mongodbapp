@@ -1,9 +1,9 @@
 const User=require('../models/userM')
 
-const createUser=async(FName,LName,email,userId,password)=>{
+const createUser=async(FName,LName,email,userId,password,role)=>{
     try {
         
-        const newuserData=new User(FName,LName,email,userId,password);
+        const newuserData=new User(FName,LName,email,userId,password,role);
         const userExistbyid=await newuserData.checkUser(userId,email);
         // const userExistbyemail=await newuserData.checkEmail(email);
         if(userExistbyid){

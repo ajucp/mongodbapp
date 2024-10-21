@@ -2,11 +2,12 @@
 const  getDb  = require("../util/database").getDb;
 
 module.exports=class Product{
-    constructor(productId,productName,description,price){
-        this.productId=productId;
+    constructor(productId,productName,description,price,image){
+        this.productId=parseInt(productId);
         this.productName=productName;
         this.description=description;
         this.price=price;
+        this.image=image;
     }
 
     async checkProductId(productId){
@@ -22,7 +23,8 @@ module.exports=class Product{
         const db=getDb();
         try {
             const result=await db.collection('Product').insertOne(this)
-            return result
+            console.log(result)
+            return this
             
         } catch (err) {
             console.log("ERROR IS MODELS IN SAVE METHOD",err)

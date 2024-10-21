@@ -3,21 +3,18 @@ const routes=express.Router();
 
 const userController=require('../controllers/userC');
 const validate=require('../middleware/validate');
-const {check,body}=require('express-validator');
-// const Verify=require('../middleware/verify')
+// const {check,body}=require('express-validator');
+const roleAuth=require('../middleware/role-auth');
+const {Roles}=require('../models/userM');
+const  Verify  = require('../middleware/verify').Verify;
+const userValidator=require('../middleware/validator');
 
-routes.post('/user',[
-    check('FName').notEmpty().withMessage('First Name is required'),
-    check('LName').notEmpty().withMessage('Last Name is required'),
-    check('email').isEmail().withMessage('Invalid email format'),
-    check('userId').notEmpty().withMessage('User ID is required'),
-    check('password').isLength({ min: 6 }).withMessage('Password must be at least 6 characters long')
-],validate,userController.postUser);
 
-routes.get('/users',userController.getUser);
 
+routes.post('/user',userValidator(),validate,userController.postUser);
+routes.get('/users',Verify,roleAuth([Roles.ADMIN]),userController.getUser); 
 routes.get('/user/:userId',userController.getUserById);
-routes.delete('/user/:userId/delete',userController.deleteUserById);
+routes.delete('/user/:userId/delete',Verify,roleAuth([Roles.ADMIN]),userController.deleteUserById);
 routes.patch('/user/:userId/edit-user',userController.postUpdateUser)
 
 

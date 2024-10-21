@@ -8,16 +8,22 @@ const cipherKey="12345678910111213141516171819202"
 // console.log(cipherKey)
 const iv = "abcdefghijklmnop"
 
-
+const Roles=Object.freeze({
+    USER:'user',
+    ADMIN:'admin',
+    OWNER:'owner'
+})
 
 module.exports=class User {
-    constructor(Fname, Lname, email,userId,password,role = "0x01") {
+    constructor(Fname, Lname, email,userId,password,role=Roles.USER) {
       this.Fname = Fname;
       this.Lname = Lname;
       this.email = email;
       this.userId=userId;
       this.password=password;
       this.role=role;
+      this.createdAt=new Date();
+      this.updatedAt=new Date();
     }
 
 
@@ -27,6 +33,8 @@ module.exports=class User {
         try {
             console.log('model page')
             // console.log('data inserted',this)
+            this.createdAt=new Date()
+            this.updatedAt=new Date()
             const result=await db.collection('users').insertOne(this)
             // console.log(result)
             return result
@@ -109,6 +117,7 @@ module.exports=class User {
     generateAccessJWT(){
         const payload={
             id:this.userId,
+            role:this.role          //add the role in jwt
         }
         const a= jwt.sign(payload,SECRET_ACCESS_TOKEN,{expiresIn:'1hr'})
         // console.log(a)
@@ -119,8 +128,7 @@ module.exports=class User {
         const db=getDb();
         try {
             const getData=db.collection('users').find().toArray()
-            return getData
-            
+            return getData    
         } catch (error) {
             console.log("ERROR IN FETCH USER MODELS",err)
         }
@@ -156,8 +164,9 @@ module.exports=class User {
         try {
 
             const filterQuery={'userId':parseInt(userId)}
-            const setQuery={};
+            const setQuery={updatedAt: new Date()};         
             console.log('UPDATING THE USER')
+            this.updatedAt=new Date()
             if(Fname){
                 setQuery.Fname=Fname
             }
@@ -172,3 +181,5 @@ module.exports=class User {
     }
 
 }
+
+module.exports.Roles=Roles;

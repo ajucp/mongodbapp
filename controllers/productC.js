@@ -14,7 +14,11 @@ exports.postProduct=async(req,res,next)=>{
     
     try {
         console.log('--INCOMING DATA OF PRODUCT--')
-        const productData=await createProduct(productId,productName,description,price)
+        if(!req.file){
+            return res.status(400).json({message:"NO Image Uploaded"})
+        }
+        const imageBase64=req.file.buffer.toString('base64')
+        const productData=await createProduct(productId,productName,description,price,imageBase64)
         res.send({productData})
     } catch (err) {
         console.log("ERROR IN CONTROLLER PRODUCT",err)
