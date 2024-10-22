@@ -21,6 +21,7 @@ module.exports=class User {
       this.email = email;
       this.userId=userId;
       this.password=password;
+      this.phone = phone;
       this.role=role;
       this.createdAt=new Date();
       this.updatedAt=new Date();

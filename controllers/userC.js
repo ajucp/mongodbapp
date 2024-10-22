@@ -4,8 +4,8 @@ const {createUser,getUser,getUserId,deleteUserData,updateUserData}=require('../s
 exports.postUser=async(req,res,next)=>{
     try {
         console.log(req.body,"INCOMING DATA FROM POST MAN")
-        const{FName,LName,email,userId,password,role}=req.body        
-        const userData=await createUser(FName,LName,email,userId,password,role);
+        const{FName,LName,email,userId,password,phone,role}=req.body        
+        const userData=await createUser(FName,LName,email,userId,password,phone,role);
         // console.log(userData)
         res.send({userData})
     } catch (err) {

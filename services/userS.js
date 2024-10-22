@@ -9,8 +9,8 @@ const createUser=async(FName,LName,email,userId,password,role)=>{
         if(userExistbyid){
             return {'message':"userId or Email already exist or password enter is incorrect"}
         }else{
-            //const pswdHash=await newuserData.passwordHash(password);
-            //newuserData.password = pswdHash;
+            // const pswdHash=await newuserData.passwordHash(password);
+            // newuserData.password = pswdHash;
             
             //for encrypt and decrypt
             // const decryptedPassword=await newuserData.decryptPwd(password);
@@ -77,5 +77,6 @@ const updateUserData=async(userId,FName,LName)=>{
         console.log("ERROR FROM SERVICE UPDATE USER",err)
     }
 }
+
 
 module.exports={createUser,getUser,getUserId,deleteUserData,updateUserData};
