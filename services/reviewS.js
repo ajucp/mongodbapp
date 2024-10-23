@@ -5,8 +5,8 @@ const User=require('../models/userM')
 
 
 const addOrUpdateReview=async(productId,userId,rating,comment)=>{
-    try {
-        const newReviewOfProd=new Product(productId)
+try {
+    const newReviewOfProd=new Product(productId)
     const productExist=await newReviewOfProd.checkProductId(productId)
     // console.log("product",productExist)
     if(!productExist || productExist.length === 0){
@@ -33,10 +33,11 @@ const addOrUpdateReview=async(productId,userId,rating,comment)=>{
 
         const review=new Review(productId,userId,rating,comment);
         const createReview=await review.createReview();
+        await Review.updateAverageRating(productId);
         return {message:"Review Added Successfully",createReview}
     }
     } catch (err) {
-        console.log('Error in adding/updating review:', err.message)
+        //console.log('Error in adding/updating review:', err.message)
         throw err
     }
     

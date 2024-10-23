@@ -10,5 +10,6 @@ routes.get('/products',productController.getProducts);
 routes.get('/products/:productId',productController.getProductById);
 routes.delete('/products/:productId/delete',productController.deleteProductById);
 routes.patch('/products/:productId/edit-product',productController.postUpdateProduct);
+routes.get('/product/search',productController.getProductByseacrhing)
 
 module.exports=routes

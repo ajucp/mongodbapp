@@ -1,9 +1,12 @@
+const {validatePhoneNumber}=require('../middleware/phoneNO_validation')
 const User=require('../models/userM')
 
-const createUser=async(FName,LName,email,userId,password,role)=>{
+const createUser=async(FName,LName,email,userId,password,phone,role)=>{
     try {
-        
-        const newuserData=new User(FName,LName,email,userId,password,role);
+        if (!validatePhoneNumber(phone)) {
+            return { message: "Invalid phone number." };
+        }
+        const newuserData=new User(FName,LName,email,userId,password,phone,role);
         const userExistbyid=await newuserData.checkUser(userId,email);
         // const userExistbyemail=await newuserData.checkEmail(email);
         if(userExistbyid){
