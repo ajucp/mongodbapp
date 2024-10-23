@@ -3,10 +3,10 @@ const {
     getAllProducts,
     getDataById,
     deleteProductData,
-    updateProductData
+    updateProductData,
+    searchProducts
     }=require('../services/productS')
 
-const ITEMS_PER_PAGE=2;
 
 exports.postProduct=async(req,res,next)=>{
     const{productId,productName,description,price}=req.body
@@ -28,34 +28,36 @@ exports.postProduct=async(req,res,next)=>{
 
 exports.getProducts=async(req,res,next)=>{
     const page=parseInt(req.query.page)||1;
+    const ITEMS_PER_PAGE=2;
     // console.log(page);
     try {
         console.log("FETCHING ALL PRODUCT DATA")
-
-        // const startIndex=(page-1)*ITEMS_PER_PAGE;
-        // const endIndex=page*ITEMS_PER_PAGE;
-
         const getProduct=await getAllProducts(page,ITEMS_PER_PAGE)//give page here
         // console.log(getProduct)
-        res.status(200).send(getProduct)
+        res.status(200).send(getProduct);
         
     } catch (err) {
-        console.log("ERROR IN CONTROLLER OF GET PRODUCTS",err)
+        console.log("ERROR IN CONTROLLER OF GET PRODUCTS",err);
+        res.status(500).json({message:"Internal Server Error"});
     }
-}
+};
 
 exports.getProductById=async(req,res,next)=>{
     const prodId=req.params.productId
     console.log(prodId)
     try {
         const ProductById=await getDataById(prodId);
+        if (ProductById.message) {
+            return res.status(404).json(ProductById);
+        }
         res.send(ProductById)
     } catch (err) {
-        console.log("ERROR IN CONTROLLER OF GET ALL PRODUCTS",err)
+        console.log("ERROR IN CONTROLLER OF GET ALL PRODUCTS",err);
+        // throw err
+        res.status(500).json({message:"Internal Server Error"});
     }
 }
 exports.deleteProductById=async(req,res,next)=>{
-    // console.log('ahi')
     const prodId=req.params.productId
     // console.log(prodId)
     try {
@@ -64,6 +66,7 @@ exports.deleteProductById=async(req,res,next)=>{
         res.send(deleteProduct)
     } catch (err) {
         console.log("ERROR IN CONTROLLER OF DELETE PRODUCT BY ID",err)
+        throw err
     }
 }
 exports.postUpdateProduct=async(req,res,next)=>{
@@ -77,5 +80,22 @@ exports.postUpdateProduct=async(req,res,next)=>{
         
     } catch (err) {
         console.log("ERROR IN CONTROLLER OF UPDATE PRODUCT BY ID",err)
+    }
+}
+
+exports.getProductByseacrhing=async (req,res,next) => {
+    const query=req.query.q || 'No result Found!!';
+    // console.log(query)
+    const filter={
+        minPrice:req.query.minPrice,
+        maxPrice:req.query.maxPrice
+    }
+    // console.log(filter)
+    try {
+        const searchProduct=await searchProducts(query,filter);
+        res.json(searchProduct)
+    } catch (err) {
+        console.log('Error in getProducts:',err);
+        res.status(500).json({err:"Internal Server Error"})
     }
 }

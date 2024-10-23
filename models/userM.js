@@ -15,7 +15,7 @@ const Roles=Object.freeze({
 })
 
 module.exports=class User {
-    constructor(Fname, Lname, email,userId,password,role=Roles.USER) {
+    constructor(Fname, Lname, email,userId,password,phone,role=Roles.USER) {
       this.Fname = Fname;
       this.Lname = Lname;
       this.email = email;

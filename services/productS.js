@@ -1,4 +1,5 @@
 const Product = require("../models/productM");
+const Review = require("../models/reviewM");
 
 const createProduct=async(productId,productName,description,price,imageBase64)=>{
     try {
@@ -19,12 +20,13 @@ const createProduct=async(productId,productName,description,price,imageBase64)=>
 const getAllProducts=async(page,ITEMS_PER_PAGE)=>{
     try {
         console.log("FETCHING ALL PRODUCT DETAILS IN SERVICE PAGE")
-        const fetchAllProduct=await Product.fetchAll(page,ITEMS_PER_PAGE)
+        const fetchAllProduct=await Product.fetchAll(page,ITEMS_PER_PAGE);
         // console.log(fetchAllProduct)
-        return fetchAllProduct
+        return fetchAllProduct;
 
     } catch (err) {
-        console.log("ERROR IN PRODUCT SERVICE PAGE OF GET ALL PRODUCTS",err)
+        console.log("ERROR IN PRODUCT SERVICE PAGE OF GET ALL PRODUCTS",err);
+        throw err
     }
 }
 
@@ -35,14 +37,15 @@ const getDataById=async(prodId)=>{
         const getProductById=await newgetproductbyId.checkProductId(prodId)
         if(getProductById.length>0){
             const product=await Product.findProductById(prodId)
-            return product
+            return product;
         }
         else{
-            console.log({"message":"Product DOESNT exist"})
-            return {"message":"Product DOESNT exist"}
+            console.log({message:"Product DOESNT exist"})
+            return {message:"Product DOESNT exist"}
         }
     } catch (err) {
         console.log("ERROR IN PRODUCT SERVICE PAGE OF GET ALL PRODUCTS BY ID",err)
+        throw err;
     }
 }
 
@@ -50,7 +53,8 @@ const deleteProductData=async(prodId)=>{
     try {
         console.log('DELETING THE PRODUCT FROM SERVCICE')
         const deleteProduct=await Product.delete(prodId)
-        return deleteProduct
+        const deleteProductReviews=await Review.deleteReviewsById(prodId)
+        return {deleteProduct,deleteProductReviews}
         
     } catch (err) {
         console.log("ERROR FROM SERVICE DELETE PRODUCT",err)
@@ -66,6 +70,17 @@ const updateProductData=async(prodId,productName,description,price)=>{
     }
     
 }
+const searchProducts=async (query,filter) => {
+    try {
+        const searchAndFilterproducts=await Product.searchAndFilter(query,filter);
+        return searchAndFilterproducts
+        
+    } catch (error) {
+        console.error("Error in SearchProduct:",error);
+        throw new Error('Cannot retrive Products')
+    }
+    return 
+}
 
 
 
@@ -75,5 +90,6 @@ module.exports=
     getAllProducts,
     getDataById,
     deleteProductData,
-    updateProductData
+    updateProductData,
+    searchProducts
 };

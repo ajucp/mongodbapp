@@ -1,5 +1,3 @@
-const { ReturnDocument } = require('mongodb');
-
 const getDb=require('../util/database').getDb;
 
 module.exports=class Review{
@@ -50,14 +48,41 @@ module.exports=class Review{
                 userId:parseInt(userId),
             },
             {
-                $set:{rating,comment,updatedAt:new Date()}
+                $set:{rating: parseInt(rating),comment,updatedAt:new Date()}
             },
         );
         // console.log(ReturnDocument);
-        console.log("Updted result",updatedReview)
+        // console.log("Updted result",updatedReview)
         return updatedReview
         } catch (err) {
             console.log("ERROR IN MY UPDATED REVIEW MODEL",err)
+        }
+    }
+
+    static async updateAverageRating(productId){
+        const db=getDb();
+        try {
+            const avgRatingResult=await db.collection('reviews').aggregate([
+                {$match:{productId:parseInt(productId)}},
+                {$group:{_id:null,avgRating:{$avg:"$rating"}}}
+            ]).toArray()
+            console.log(avgRatingResult)
+            const newAverageRating=avgRatingResult.length > 0 ? avgRatingResult[0].avgRating : null;
+            if(newAverageRating!==null){
+                await db.collection("Product").updateOne(
+                    {productId:parseInt(productId)},
+                    {$set:{averageRating:newAverageRating}}
+                );
+            }
+            else{
+                await db.collection('Product').updateOne(
+                    {productId:parseInt(productId)},
+                    {$unset:{averageRating:''}}
+                );
+            }
+        } catch (err) {
+            console.error("Error in updating average rating", err);
+            throw err
         }
     }
 
@@ -68,6 +93,15 @@ module.exports=class Review{
             return reviews
         } catch (err) {
             console.log("ERROR IN FETCHING REVIEWS IN MODEL",err)
+            throw err
+        }
+    }
+    static async deleteReviewsById(productId){
+        const db=getDb();
+        try {
+            const deleteReviews=await db.collection('reviews').deleteMany({productId:parseInt(productId)});
+            return deleteReviews
+        } catch (err) {
             throw err
         }
     }
