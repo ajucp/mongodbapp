@@ -66,7 +66,7 @@ module.exports=class Review{
                 {$match:{productId:parseInt(productId)}},
                 {$group:{_id:null,avgRating:{$avg:"$rating"}}}
             ]).toArray()
-            console.log(avgRatingResult)
+            // console.log(avgRatingResult)
             const newAverageRating=avgRatingResult.length > 0 ? avgRatingResult[0].avgRating : null;
             if(newAverageRating!==null){
                 await db.collection("Product").updateOne(

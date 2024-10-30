@@ -70,16 +70,17 @@ const updateProductData=async(prodId,productName,description,price)=>{
     }
     
 }
-const searchProducts=async (query,filter) => {
+const searchProducts=async (query,filters) => {
     try {
-        const searchAndFilterproducts=await Product.searchAndFilter(query,filter);
+        const searchAndFilterproducts=await Product.searchAndFilter(query,filters);
+        console.log('searchandfilter:',searchAndFilterproducts)
         return searchAndFilterproducts
         
     } catch (error) {
         console.error("Error in SearchProduct:",error);
         throw new Error('Cannot retrive Products')
     }
-    return 
+    
 }
 
 

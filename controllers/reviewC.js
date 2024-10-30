@@ -7,6 +7,9 @@ exports.postReview=async(req,res,next)=>{
     if(!productId || !userId || !rating){
         return res.status(400).json({message:'missing required fields'})
     }
+    if(rating <0||rating>5){
+        return res.status(400).json({message:"rating must be between 1 to 5!!"})
+    }
 
     const newReview=await addOrUpdateReview(productId,userId,rating,comment)
     
@@ -25,7 +28,7 @@ exports.getProductReview=async  (req,res,next)=> {
             return res.status(400).json({message:"PRODUCT ID is REQUIRED"})
         }
         const reviewsData =await getReviewByAvgRating(productId)
-        console.log(reviewsData)
+        console.log("rating",reviewsData)
         res.status(200).json(reviewsData)
     } catch (err) {
         console.log("ERROR IN CONTROLLER OF GET PRODUCT REVIEW")

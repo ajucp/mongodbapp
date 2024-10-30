@@ -86,13 +86,16 @@ exports.postUpdateProduct=async(req,res,next)=>{
 exports.getProductByseacrhing=async (req,res,next) => {
     const query=req.query.q || 'No result Found!!';
     // console.log(query)
-    const filter={
-        minPrice:req.query.minPrice,
-        maxPrice:req.query.maxPrice
+    const filters={
+        minPrice: req.query.minPrice ? parseInt(req.query.minPrice) : null,
+        maxPrice: req.query.maxPrice ? parseInt(req.query.maxPrice) : null,
+        minRating: req.query.minRating ? parseFloat(req.query.minRating) : null,
+        maxRating: req.query.maxRating ? parseFloat(req.query.maxRating) : null,
     }
-    // console.log(filter)
+    console.log(filters) 
     try {
-        const searchProduct=await searchProducts(query,filter);
+        const searchProduct=await searchProducts(query,filters);
+        console.log(searchProduct)
         res.json(searchProduct)
     } catch (err) {
         console.log('Error in getProducts:',err);

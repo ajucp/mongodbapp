@@ -144,8 +144,45 @@ module.exports=class Product{
         }
     }
 
-    static async searchAndFilter(params) {
+    static async searchAndFilter(query,filters) {
+        const db=getDb();
         
+            const searchquery={};
+            if(query && query !== 'No result Found!!'){
+                searchquery.$or=[
+                    {productName:{$regex:query,$options:'i'}},
+                    {description:{$regex:query,$options:'i'}}
+                ];
+            }
+            
+            if(filters.minPrice !== null){
+                searchquery.price={ ...searchquery.price,$gte:parseInt(filters.minPrice)};
+            }
+            console.log('search query min price:',searchquery.price)
+            if(filters.maxPrice !== null){
+                searchquery.price={...searchquery.price,$lte:parseInt(filters.maxPrice)};
+            }
+            console.log('search query max price:',searchquery.price)
+            if(filters.minRating !== null){
+                searchquery.averageRating={...searchquery.averageRating,$gte:parseFloat(filters.minRating)};
+            }
+            console.log('search query min rating:',searchquery.averageRating)
+            if(filters.maxRating !== null){
+                searchquery.averageRating={...searchquery.averageRating,$lte:parseFloat(filters.maxRating)}
+            }
+            console.log('search query max rating:',searchquery.averageRating)
+            console.log('search rating:',JSON.stringify(searchquery,null))
+            try {
+                // const searchqueryfilter=JSON.stringify(searchquery,null,2)
+            const searchResult=await db.collection('Product').find(searchquery).toArray();
+            console.log('search result:',searchResult)
+            return searchResult;
+
+            
+        } catch (err) {
+            console.log('Error searching products Models:',err)
+            throw err;
+        }
     }
 
 }
